@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AYANFE WAIFU GENERATOR</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 0; background: linear-gradient(to bottom, #290033, #660099); color: white; }
+        #loading { font-size: 24px; font-weight: bold; color: #ffcc00; margin-top: 20vh; animation: pulse 1.5s infinite; }
+        #main-content { display: none; padding: 20px; }
+        img, video { max-width: 400px; border-radius: 10px; box-shadow: 0 0 20px rgba(255,255,255,0.1); margin-top: 20px; }
+        select, button { padding: 12px; font-size: 20px; margin-top: 10px; border-radius: 5px; cursor: pointer; border: none; }
+        button { background-color: #ff4081; color: white; transition: 0.3s; }
+        button:hover { background-color: #ff0055; }
+        a { display: block; margin-top: 20px; font-size: 18px; color: #ffcc00; text-decoration: none; font-weight: bold; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body>
+    <div id="loading">⏳ Loading... Hang tight! 🚀</div>
+
+    <div id="main-content">
+        <h1>🎨 Welcome to Waifu Generator API</h1>
+        <p>Select a waifu category and get an image, GIF, or video:</p>
+        
+        <label for="category">Choose a category:</label>
+<select id="category">
+    <!-- Versatile Categories -->
+    <optgroup label="Versatile">
+        <option value="waifu">Waifu</option>
+        <option value="maid">Maid</option>
+        <option value="marin-kitagawa">Marin Kitagawa</option>
+        <option value="mori-calliope">Mori Calliope</option>
+        <option value="raiden-shogun">Raiden Shogun</option>
+        <option value="oppai">Oppai</option>
+        <option value="selfies">Selfies</option>
+        <option value="uniform">Uniform</option>
+        <option value="kamisato-ayaka">Kamisato Ayaka</option>
+    </optgroup>
+
+    <!-- NSFW Categories -->
+    <optgroup label="NSFW">
+        <option value="ass">Ass</option>
+        <option value="hentai">Hentai</option>
+        <option value="milf">Milf</option>
+        <option value="oral">Oral</option>
+        <option value="paizuri">Paizuri</option>
+        <option value="ecchi">Ecchi</option>
+        <option value="ero">Ero</option>
+    </optgroup>
+</select>
+        <button onclick="fetchWaifu()">Get Waifu</button>
+        <br><br>
+        <img id="waifuImage" src="" alt="Waifu Image" style="display:none;">
+        <video id="waifuVideo" controls style="display:none;"></video>
+
+        <a href="https://github.com/Neaterry6" target="_blank">🔗 Contact Owner (GitHub)</a>
+    </div>
+
+    <script>
+        setTimeout(() => {
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("main-content").style.display = "block";
+        }, 2000);
+
+        async function fetchWaifu() {
+            const category = document.getElementById("category").value;
+            const apiUrl = "https://api.waifu.im/search";
+            const params = { included_tags: [category] };
+            const queryParams = new URLSearchParams();
+            
+            Object.entries(params).forEach(([key, value]) => {
+                if (Array.isArray(value)) {
+                    value.forEach(v => queryParams.append(key, v));
+                } else {
+                    queryParams.set(key, value);
+                }
+            });
+
+            const requestUrl = `${apiUrl}?${queryParams.toString()}`;
+
+            try {
+                document.getElementById("waifuImage").style.display = "none";
+                document.getElementById("waifuVideo").style.display = "none";
+
+                const response = await fetch(requestUrl);
+                const data = await response.json();
+                console.log("API Response:", data); // Debugging
+
+                if (data.images && data.images.length > 0) {
+                    const mediaUrl = data.images[0].url;
+                    if (mediaUrl.endsWith(".gif") || mediaUrl.endsWith(".mp4")) {
+                        document.getElementById("waifuVideo").src = mediaUrl;
+                        document.getElementById("waifuVideo").style.display = "block";
+                    } else {
+                        document.getElementById("waifuImage").src = mediaUrl;
+                        document.getElementById("waifuImage").style.display = "block";
+                    }
+                } else {
+                    alert("Failed to fetch waifu content!");
+                }
+            } catch (error) {
+                console.error("Error fetching waifu:", error);
+                alert("API request failed!");
+            }
+        }
+    </script>
+</body>
+  </html
