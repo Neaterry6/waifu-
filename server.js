@@ -5,25 +5,68 @@ const axios = require("axios");
 const app = express();
 app.use(cors());
 
-// Waifu.im API details
-const WAIFU_API_URL = "https://api.waifu.im/sfw/waifu/";
-const API_TOKEN = "7qZmd6wMCZN811by0FZUsrMXXv4EouU-guFZVRknQCnwoWDbWSfEZ5_7AJDfbqYtLX-J8x0vwdpiGORiTcye2txEF753rhrxTXtACS-H9bNXJKzYIro3X7EU4WWmA6SL2Ohx8J5ppkYLlumTEqpexyb17jXKorXmHSwc6bFHIOg";
+const WAIFU_API_URL = "https://api.waifu.im/search";
 
+// Category list
+const categories = {
+  versatile: [
+    "maid",
+    "waifu",
+    "marin-kitagawa",
+    "mori-calliope",
+    "raiden-shogun",
+    "oppai",
+    "selfies",
+    "uniform",
+    "kamisato-ayaka"
+  ],
+  nsfw: [
+    "ass",
+    "hentai",
+    "milf",
+    "oral",
+    "paizuri",
+    "ecchi",
+    "ero"
+  ]
+};
+
+// Fetch Waifu image
 app.get("/api/waifu", async (req, res) => {
-    try {
-        const response = await axios.get(WAIFU_API_URL, {
-            headers: { Authorization: `Bearer ${API_TOKEN}` }
-        });
+  const tags = req.query.tags ? req.query.tags.split(",") : ["waifu"];
+  const height = req.query.height || ">=2000";
 
-        if (response.data && response.data.images) {
-            res.json({ image: response.data.images[0].url });
-        } else {
-            res.status(500).json({ error: "Failed to retrieve waifu image." });
-        }
-    } catch (error) {
-        console.error("API Error:", error);
-        res.status(500).json({ error: "Error fetching waifu image." });
+  try {
+    const response = await axios.get(WAIFU_API_URL, {
+      params: {
+        included_tags: tags,
+        height: height
+      }
+    });
+
+    if (response.data.images && response.data.images.length > 0) {
+      res.json({
+        image: response.data.images[0].url,
+        tags: tags,
+        height: height
+      });
+    } else {
+      res.status(404).json({ error: "No waifu image found." });
     }
+  } catch (error) {
+    console.error("Error fetching waifu:", error);
+    res.status(500).json({ error: "API request failed!" });
+  }
+});
+
+// List available categories
+app.get("/api/categories", (req, res) => {
+  res.json(categories);
+});
+
+// Root route
+app.get("/", (req, res) => {
+  res.send("Welcome to the Waifu API. Available endpoints: /api/waifu, /api/categories");
 });
 
 const PORT = process.env.PORT || 8080;
