@@ -1,13 +1,18 @@
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
+const path = require("path");
 
 const app = express();
 app.use(cors());
 
+// Serve static files from public/
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Waifu.im API URL (no token needed)
 const WAIFU_API_URL = "https://api.waifu.im/search";
 
-// Category list
+// Categories
 const categories = {
   versatile: [
     "maid",
@@ -31,17 +36,14 @@ const categories = {
   ]
 };
 
-// Fetch Waifu image
+// Waifu fetch endpoint
 app.get("/api/waifu", async (req, res) => {
   const tags = req.query.tags ? req.query.tags.split(",") : ["waifu"];
   const height = req.query.height || ">=2000";
 
   try {
     const response = await axios.get(WAIFU_API_URL, {
-      params: {
-        included_tags: tags,
-        height: height
-      }
+      params: { included_tags: tags, height: height }
     });
 
     if (response.data.images && response.data.images.length > 0) {
@@ -59,15 +61,16 @@ app.get("/api/waifu", async (req, res) => {
   }
 });
 
-// List available categories
+// Categories endpoint
 app.get("/api/categories", (req, res) => {
   res.json(categories);
 });
 
-// Root route
+// Root route (optional if serving static index.html)
 app.get("/", (req, res) => {
-  res.send("Welcome to the Waifu API. Available endpoints: /api/waifu, /api/categories");
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
+// Start server
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`✅ Waifu Generator API running at http://localhost:${PORT}`));
