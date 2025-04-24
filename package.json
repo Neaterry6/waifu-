@@ -1,20 +1,28 @@
 {
   "name": "waifu-generator-api",
   "version": "1.0.0",
-  "description": "Fetch waifu images dynamically using Waifu.im API",
+  "description": "A simple Express-based Waifu image generator API using waifu.im",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "build": "npm install axios --force && npm install --force"
+    "dev": "nodemon server.js"
   },
+  "keywords": [
+    "waifu",
+    "api",
+    "express",
+    "waifu.im",
+    "anime",
+    "image-generator"
+  ],
+  "author": "YourNameHere",
+  "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
+    "axios": "^1.6.8",
     "cors": "^2.8.5",
-    "axios": "^1.4.0"
+    "express": "^4.19.2"
   },
-  "engines": {
-    "node": "18.x"
-  },
-  "author": "Your Name",
-  "license": "MIT"
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
 }
