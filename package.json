@@ -1,28 +1,19 @@
 {
-  "name": "waifu-generator-api",
+  "name": "waifu-api",
   "version": "1.0.0",
-  "description": "A simple Express-based Waifu image generator API using waifu.im",
+  "description": "Simple Express Waifu API wrapper with category support and public frontend",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "node server.js"
   },
-  "keywords": [
-    "waifu",
-    "api",
-    "express",
-    "waifu.im",
-    "anime",
-    "image-generator"
-  ],
-  "author": "YourNameHere",
-  "license": "MIT",
   "dependencies": {
     "axios": "^1.6.8",
     "cors": "^2.8.5",
     "express": "^4.19.2"
   },
-  "devDependencies": {
-    "nodemon": "^3.0.3"
-  }
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "Neaterry",
+  "license": "MIT"
 }
